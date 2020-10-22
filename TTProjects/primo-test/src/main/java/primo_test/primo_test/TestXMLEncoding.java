@@ -2,6 +2,7 @@ package primo_test.primo_test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -659,6 +660,7 @@ class TestXMLEncoding {
 		SAXReader reader = new SAXReader();
 		
 		
+		System.out.println(xmlContentValid);
 		Document tpxml = null;
 		try {
 			tpxml=reader.read(new StringReader(xmlContentValid));
@@ -668,6 +670,18 @@ class TestXMLEncoding {
 		}
 		
 		System.out.println(tpxml.asXML());
+		System.out.println("*****************************************************************************************************************************************************************************");
+		
+		try {
+			StringWriter writerx = new StringWriter();
+			tpxml.write(writerx);
+			System.out.println(writerx.toString());
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		System.out.println("*****************************************************************************************************************************************************************************");
+		
 		
 		org.w3c.dom.Document doc = convertStringToXMLDocument(xmlContentValid);
 		
@@ -679,6 +693,12 @@ class TestXMLEncoding {
 			Transformer transformer = tf.newTransformer();
 			transformer.transform(domSource, result);
 			System.out.println("XML IN String format is: \n" + writer.toString());
+			System.out.println("*****************************************************************************************************************************************************************************");
+
+			PrimoNMBibDocument primoNmbDoc=processPrimoNMBibDocumentR(writer.toString());
+			System.out.println("Title:"+primoNmbDoc.getPrimoNMBib().getRecordArray(0).getFrbr().getK3Array(0));
+		
+		
 		} catch (TransformerConfigurationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
