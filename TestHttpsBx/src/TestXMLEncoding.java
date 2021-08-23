@@ -2,6 +2,7 @@
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -18,8 +19,9 @@ import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.Node;
+import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
-
+import org.dom4j.io.XMLWriter;
 
 import javax.xml.parsers.*;
 import javax.xml.transform.Transformer;
@@ -712,6 +714,7 @@ class TestXMLEncoding {
 		SAXReader reader = new SAXReader();
 		
 		
+		System.out.println(xmlContentValid);
 		Document tpxml = null;
 		try {
 			tpxml=reader.read(new StringReader(xmlContentValid));
@@ -721,6 +724,27 @@ class TestXMLEncoding {
 		}
 		
 		System.out.println(tpxml.asXML());
+		System.out.println("*****************************************************************************************************************************************************************************");
+		
+		try {
+			StringWriter writerx = new StringWriter();
+			tpxml.write(writerx);
+			System.out.println(writerx.toString());
+			
+			System.out.println("*****************************************************************************************************************************************************************************");
+			System.out.println("Write XMLWriter:");
+			StringWriter sw = new StringWriter();
+			OutputFormat format = OutputFormat.createPrettyPrint();
+			format.setEncoding("US-ASCII");
+			final XMLWriter writer3 = new XMLWriter(sw,format);
+			writer3.write(tpxml);
+			System.out.println(sw.toString());
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		System.out.println("*****************************************************************************************************************************************************************************");
+		
 		
 		org.w3c.dom.Document doc = convertStringToXMLDocument(xmlContentValid);
 		
@@ -731,7 +755,13 @@ class TestXMLEncoding {
 			TransformerFactory tf = TransformerFactory.newInstance();
 			Transformer transformer = tf.newTransformer();
 			transformer.transform(domSource, result);
-			System.out.println("XML IN String format is: \n" + writer.toString());
+			System.out.println("XML IN String format after transformation is: \n" + writer.toString());
+			System.out.println("*****************************************************************************************************************************************************************************");
+
+			PrimoNMBibDocument primoNmbDoc=processPrimoNMBibDocumentR(writer.toString());
+			System.out.println("Title:"+primoNmbDoc.getPrimoNMBib().getRecordArray(0).getFrbr().getK3Array(0));
+		
+		
 		} catch (TransformerConfigurationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -742,6 +772,51 @@ class TestXMLEncoding {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
+	}
+	
+	@Test
+	void testXMLParsing2() {
+
+		
+		SAXReader reader = new SAXReader();
+		
+		
+		System.out.println(xmlContentValid);
+		Document tpxml = null;
+		try {
+			tpxml=reader.read(new StringReader(xmlContentValid));
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println(tpxml.asXML());
+		System.out.println("*****************************************************************************************************************************************************************************");
+		
+		try {
+			StringWriter writerx = new StringWriter();
+			tpxml.write(writerx);
+			System.out.println(writerx.toString());
+			
+			System.out.println("*****************************************************************************************************************************************************************************");
+			System.out.println("Write XMLWriter:");
+			StringWriter sw = new StringWriter();
+			OutputFormat format = OutputFormat.createPrettyPrint();
+			//format.setEncoding("US-ASCII");
+			format.setEncoding("UTF-8");
+			final XMLWriter writer3 = new XMLWriter(sw,format);
+			writer3.write(tpxml);
+			System.out.println(sw.toString());
+			
+			PrimoNMBibDocument primoNmbDoc=processPrimoNMBibDocumentR(sw.toString());
+			System.out.println("Title:"+primoNmbDoc.getPrimoNMBib().getRecordArray(0).getFrbr().getK3Array(0));
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		System.out.println("*****************************************************************************************************************************************************************************");
+		
+		
 	}
 	
 	@Test

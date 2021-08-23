@@ -12,6 +12,7 @@ public class App
 {
     public static void main( String[] args )
     {
+    	 System.out.println( "xxxx " + args[0]);
         System.out.println( "Hello World!" );
         
         Pattern pattern = Pattern.compile("\\d{4}");
